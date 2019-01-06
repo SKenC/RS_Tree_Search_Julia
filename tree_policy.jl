@@ -1,7 +1,7 @@
 include("utils.jl")
 include("value_functions.jl")
 
-function tree_policy(;tree, algo_name)
+function tree_policy(;tree, algo_name, playout_num)
     node_num = 0
     depth = 0
     node = tree.root
@@ -13,7 +13,7 @@ function tree_policy(;tree, algo_name)
             node = best_child(node=node, algo_name=algo_name)
             #node_num = best_child_negamax(tree=tree, node_num=node_num, depth=depth)
         else
-            if node.n > 100
+            if node.n > playout_num
                 return expand(children)
             else
                 return node
@@ -49,9 +49,13 @@ function best_child(;node, algo_name::String)
     if algo_name == "UCT"
         values = [ucb(n_ij=c.n, n_i=c.parent.n, q=c.q) for c in children]
     elseif algo_name == "RS"
-        values = [rs(n_ij=c.n, q=c.q, r=0.7) for c in children]
+        values = [rs(n_ij=c.n, q=c.q, r=0.9) for c in children]
     else
         print("Algorithm name error.")
+    end
+
+    for i=1:length(children)
+        children[i].data[algo_name] = values[i]
     end
 
     # 最大値の添え字(複数なら最大値のうちランダムで)

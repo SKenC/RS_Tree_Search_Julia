@@ -3,7 +3,7 @@ function accuracy(;result, target)
     正解率として、二つのリストの一致割合を返す
     :return: 正解率
     """
-    # correct = 0
+    #correct = 0
     # for i=1:length(result)
     #     if result[i].id == target[i].id
     #         correct += 1
@@ -50,7 +50,11 @@ function data_print(node, data_name)
     elseif data_name == "id"
         print("$(node.id)")
     else
-        print("$(node.data[data_name])")
+        if haskey(node.data, data_name)
+            print("$(node.data[data_name])")
+        else
+            print("-")
+        end
     end
 end
 

@@ -2,7 +2,7 @@ include("modules.jl")
 using .MODULE
 using Statistics
 
-function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false)
+function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false, algo_name="UCT", playout_num=0)
 
     print("Build P-game Tree...")
     data_set = get_data_set(d=d, bf=bf, data_size=data_size, tree_name="kocsis")
@@ -11,12 +11,15 @@ function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false)
 
     predictions = []
     @progress for i=1:data_size
-        push!(predictions, mcts(tree=data_set[i], n=rollout_num))
+        push!(predictions, mcts(tree=data_set[i],
+                                n=rollout_num,
+                                algo_name=algo_name,
+                                playout_num=playout_num))
     end
 
     if draw
         for i=1:data_size
-            print_tree(tree=data_set[i], data_name="n")
+            print_tree(tree=data_set[i], data_name=algo_name)
         end
     end
 
@@ -36,7 +39,13 @@ function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false)
 
 end
 
-@time means = main(d=20, bf=2, data_size=100, rollout_num=1000)
+@time means = main( d=4,
+                    bf=2,
+                    data_size=1,
+                    rollout_num=1000,
+                    algo_name="UCT",
+                    draw=true,
+                    playout_num=1)
 
 using Plots
 plot(means)

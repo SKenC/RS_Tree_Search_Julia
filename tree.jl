@@ -13,7 +13,7 @@ mutable struct Node
           parent,
           [],
           false,
-          1,
+          0,
           0.,
           Dict{String,Float64}())
   end
