@@ -1,8 +1,9 @@
 include("tree.jl")
+include("utils.jl")
 
-function get_data_set(;d::Int64, bf=Int64, data_size::Int64, tree_name="kocsis")
+function get_data_set(;d::Int64, bf=Int64, data_size::Int64, tree_name="kocsis", draw=false)
     tree_list = Vector{}()
-
+    print("OK")
     if tree_name == "kocsis"
         for i=1:data_size
             push!(tree_list, build_kocsis_tree(d=d, bf=bf))
@@ -11,6 +12,10 @@ function get_data_set(;d::Int64, bf=Int64, data_size::Int64, tree_name="kocsis")
         for i=1:data_size
             push!(tree_list, build_oyo_tree(d=d, bf=bf))
         end
+    end
+
+    if draw
+        print_tree(tree=tree_list[1], data_name="value")
     end
 
     return tree_list
@@ -74,6 +79,7 @@ function build_kocsis_tree(;d::Int64, bf::Int64)
     r = rand(0:127, node_num)
     for depth=0:d
         #print("$depth-->")
+        i = 1
         for p in parents
             for c in p.children
                 if (depth%2) == 0
@@ -83,6 +89,9 @@ function build_kocsis_tree(;d::Int64, bf::Int64)
                     #r = rand(-127:0)
                     c.data["value"] = p.data["value"] - r[c.id]#+ rand(-127:0)
                 end
+                c.j = depth+1
+                c.i = i
+                i += 1
                 #children = vcat(children, p.children)
                 push!(children, c)
             end

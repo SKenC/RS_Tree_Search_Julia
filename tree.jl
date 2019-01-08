@@ -4,7 +4,8 @@ mutable struct Node
   parent
   children::Vector
   expanded::Bool
-
+  i::Int64
+  j::Int64
   n::Int64
   q::Float64
   data::Dict{String,Float64}
@@ -13,6 +14,8 @@ mutable struct Node
           parent,
           [],
           false,
+          0,
+          0,
           0,
           0.,
           Dict{String,Float64}())

@@ -1,5 +1,4 @@
-
-function negamax_backup(;node, reward)
+function backup(;node, reward, negamax=false)
     """
     対局ゲーム用のバックアップ。交互に報酬がマイナスになる。
     指定されたノードからルートの子ノードまでの各ノードの情報を報酬を使って更新
@@ -12,7 +11,9 @@ function negamax_backup(;node, reward)
     while current.parent != []
         current.n += 1
         current.q += r
-        r = -1 * r
+        if negamax
+            r = -1 * r
+        end
 
         current = current.parent
     end

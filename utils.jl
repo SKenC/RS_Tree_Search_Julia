@@ -1,21 +1,27 @@
-function accuracy(;result, target)
+function accuracy(;result, target, type_name="reward")
     """
     正解率として、二つのリストの一致割合を返す
     :return: 正解率
     """
-    #correct = 0
-    # for i=1:length(result)
-    #     if result[i].id == target[i].id
-    #         correct += 1
-    #     end
-    # end
-    if result[1].id == target[1].id
-        return 1.
-    else
-        return 0.
-    end
 
-    #return correct / length(result)
+    if type_name == "first"
+        if result[1].id == target[1].id
+            return 1.
+        else
+            return 0.
+        end
+    elseif type_name == "reward"
+        return result[end].data["reward"]
+
+    elseif type_name == "all"
+        correct = 0
+        for i=1:length(result)
+            if result[i].id == target[i].id
+                correct += 1
+            end
+        end
+        return correct / length(result)    
+    end
 end
 
 function arg_max_rand(values::Vector)
@@ -49,6 +55,10 @@ function data_print(node, data_name)
         print("$(node.n)")
     elseif data_name == "id"
         print("$(node.id)")
+    elseif data_name == "q"
+        print("$(node.q)")
+    elseif data_name == "ij"
+        print("[$(node.i),$(node.j)]")
     else
         if haskey(node.data, data_name)
             print("$(node.data[data_name])")

@@ -1,7 +1,7 @@
 include("utils.jl")
 include("value_functions.jl")
 
-function tree_policy(;tree, algo_name, playout_num)
+function tree_policy(;tree, algo_name, sample_num::Int64)
     node_num = 0
     depth = 0
     node = tree.root
@@ -10,10 +10,14 @@ function tree_policy(;tree, algo_name, playout_num)
         children = get_nodes(tree, node, false)
         if length(children) == 0
             #print("non-expanded={}".format(children))
-            node = best_child(node=node, algo_name=algo_name)
+            if (depth%2) == 0
+                node = best_child(node=node, algo_name=algo_name, negamax=false)
+            else
+                node = best_child(node=node, algo_name=algo_name, negamax=true)
+            end
             #node_num = best_child_negamax(tree=tree, node_num=node_num, depth=depth)
         else
-            if node.n > playout_num
+            if node.n > sample_num || node.id == 0
                 return expand(children)
             else
                 return node
@@ -38,7 +42,7 @@ function expand(untried)
     return new_node
 end
 
-function best_child(;node, algo_name::String)
+function best_child(;node, algo_name::String, negamax=false)
     """
     最も高い価値関数をもつ子ノードの番号を返す
     """
@@ -52,6 +56,10 @@ function best_child(;node, algo_name::String)
         values = [rs(n_ij=c.n, q=c.q, r=0.9) for c in children]
     else
         print("Algorithm name error.")
+    end
+
+    if negamax
+        values = values * -1
     end
 
     for i=1:length(children)

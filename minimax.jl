@@ -63,7 +63,7 @@ function calc_correct_rate(;predictions, tree, draw=false)
 
     correct_rate = []
     for i=1:length(predictions)
-        push!(correct_rate, accuracy(result=opt_path, target=predictions[i]))
+        push!(correct_rate, accuracy(result=predictions[i], target=opt_path))
     end
 
     return correct_rate
