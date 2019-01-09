@@ -44,7 +44,7 @@ function get_opt_path(;minimax)
     return path
 end
 
-function calc_correct_rate(;predictions, tree, draw=false)
+function calc_correct_rate(;predictions, tree, draw=false, type_name="reward")
     """各treeから最適なpathを求め、stepごとの正解率を返す
     Args:
         predictions: 各stepでの予測したpath (steps, depth)のVector
@@ -63,7 +63,39 @@ function calc_correct_rate(;predictions, tree, draw=false)
 
     correct_rate = []
     for i=1:length(predictions)
-        push!(correct_rate, accuracy(result=predictions[i], target=opt_path))
+        push!(correct_rate, accuracy(result=predictions[i], target=opt_path, type_name=type_name))
+    end
+
+    return correct_rate
+end
+
+function calc_correct_rate2(;predictions, tree, draw=false, type_name="reward")
+    minimax = minimax_algo_nx(tree=tree)
+    #opt_path = get_opt_path(minimax=minimax)
+    if draw
+        print_tree(tree=minimax, data_name="value")
+        predicts = [predictions[end][i].id for i=1:length(predictions[end])]
+        println("prediction=$predicts")
+    end
+
+    correct_rate = []
+    node = minimax.root
+    for i=1:length(predictions)
+        correct = 0
+        depth = 1
+        while node.children != []
+            ans_idx = arg_max_rand([node.children[i].data["value"] for i=1:length(node.children)])
+            #@show node.children[ans_idx].id, predictions[i][depth].id
+            if node.children[ans_idx].id == predictions[i][depth].id
+                correct += 1
+                node = node.children[ans_idx]
+            else
+                node = node.children[minimax.bf - predictions[i][depth].i%minimax.bf]
+            end
+            depth += 1
+        end
+        push!(correct_rate, correct/minimax.d)
+        node = minimax.root
     end
 
     return correct_rate

@@ -7,6 +7,7 @@ module MODULE
         get_data_set,
         mcts,
         calc_correct_rate,
+        calc_correct_rate2,
         print_tree
 
 end

@@ -15,7 +15,11 @@ function get_data_set(;d::Int64, bf=Int64, data_size::Int64, tree_name="kocsis",
     end
 
     if draw
-        print_tree(tree=tree_list[1], data_name="value")
+
+        for i=1:data_size
+            println("TREES DATA $i")
+            print_tree(tree=tree_list[i], data_name="value")
+        end
     end
 
     return tree_list

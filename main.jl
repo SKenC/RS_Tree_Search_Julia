@@ -29,9 +29,10 @@ function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false, algo_name="U
     correct_rates = []
     for i=1:data_size
         push!(correct_rates,
-                calc_correct_rate(predictions=predictions[i],
+                calc_correct_rate2(predictions=predictions[i],
                                     tree=data_set[i],
-                                    draw=draw))
+                                    draw=draw,
+                                    type_name="first"))
     end
 
     rates = hcat(correct_rates...)'
@@ -42,17 +43,17 @@ function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false, algo_name="U
 
 end
 
-@time means = main( d=9,
+@time means = main( d=5,
                     bf=2,
                     data_size=1,
                     rollout_num=1000,
                     algo_name="RS",
-                    draw=false,
+                    draw=true,
                     sample_num=1)
 
-@time uctmeans = main( d=9,
+@time uctmeans = main( d=7,
                     bf=2,
-                    data_size=1,
+                    data_size=100,
                     rollout_num=1000,
                     algo_name="UCT",
                     draw=false,
@@ -60,4 +61,5 @@ end
 
 graph = hcat(means, uctmeans)
 using Plots
+plot(means)
 plot(graph)

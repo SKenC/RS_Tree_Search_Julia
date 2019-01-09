@@ -20,7 +20,7 @@ function accuracy(;result, target, type_name="reward")
                 correct += 1
             end
         end
-        return correct / length(result)    
+        return correct / length(result)
     end
 end
 
