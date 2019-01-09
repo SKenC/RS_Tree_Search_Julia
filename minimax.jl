@@ -11,7 +11,7 @@ function minimax_algo_nx(;tree)
     end
 
     #minimax_treeを作る
-    rev = 1.
+    rev = -1.
     layer = leaf_list
     while length(layer) > 1
         new_layer = []
