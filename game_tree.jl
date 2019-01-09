@@ -6,6 +6,9 @@ function get_data_set(;d::Int64, bf=Int64, data_size::Int64, tree_name="kocsis",
     print("OK")
     if tree_name == "kocsis"
         for i=1:data_size
+            if i%10 == 0
+                print("data$i-")
+            end
             push!(tree_list, build_kocsis_tree(d=d, bf=bf))
         end
     elseif tree_name == "oyo"

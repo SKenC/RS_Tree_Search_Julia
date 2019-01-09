@@ -1,7 +1,7 @@
 include("utils.jl")
 include("value_functions.jl")
 
-function tree_policy(;tree, algo_name, sample_num::Int64)
+function tree_policy(;tree, algo_name, sample_num::Int64, r=0.9)
     node_num = 0
     depth = 0
     node = tree.root
@@ -11,9 +11,9 @@ function tree_policy(;tree, algo_name, sample_num::Int64)
         if length(children) == 0
             #print("non-expanded={}".format(children))
             if (depth%2) == 0
-                node = best_child(node=node, algo_name=algo_name, negamax=false)
+                node = best_child(node=node, algo_name=algo_name, negamax=false, r=r)
             else
-                node = best_child(node=node, algo_name=algo_name, negamax=true)
+                node = best_child(node=node, algo_name=algo_name, negamax=true, r=r)
             end
             #node_num = best_child_negamax(tree=tree, node_num=node_num, depth=depth)
         else
@@ -42,7 +42,7 @@ function expand(untried)
     return new_node
 end
 
-function best_child(;node, algo_name::String, negamax=false)
+function best_child(;node, algo_name::String, negamax=false, r=0.9)
     """
     最も高い価値関数をもつ子ノードの番号を返す
     """
@@ -53,7 +53,7 @@ function best_child(;node, algo_name::String, negamax=false)
     if algo_name == "UCT"
         values = [ucb(n_ij=c.n, n_i=c.parent.n, q=c.q) for c in children]
     elseif algo_name == "RS"
-        values = [rs(n_ij=c.n, q=c.q, r=0.9) for c in children]
+        values = [rs(n_ij=c.n, q=c.q, r=r) for c in children]
     else
         print("Algorithm name error.")
     end

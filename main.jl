@@ -2,19 +2,22 @@ include("modules.jl")
 using .MODULE
 using Statistics
 
-function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false, algo_name="UCT", sample_num=1)
+function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false, algo_name="UCT", sample_num=1, r=0.9)
 
     print("Build P-game Tree...")
     data_set = get_data_set(d=d, bf=bf, data_size=data_size, tree_name="kocsis", draw=draw)
     #minimax = minimax_algo_nx(tree=data_set[1])
     # println(get_opt_path(minimax=minimax))
 
+    println("MCTS")
     predictions = []
-    @progress for i=1:data_size
+    for i=1:data_size
+        print("data$i-")
         push!(predictions, mcts(tree=data_set[i],
                                 n=rollout_num,
                                 algo_name=algo_name,
-                                sample_num=sample_num))
+                                sample_num=sample_num,
+                                r=r))
     end
 
     if draw
@@ -43,6 +46,7 @@ function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false, algo_name="U
 
 end
 
+"""
 @time means = main( d=7,
                     bf=2,
                     data_size=100,
@@ -63,3 +67,4 @@ graph = hcat(means, uctmeans)
 using Plots
 plot(means)
 plot(graph)
+"""
