@@ -29,7 +29,7 @@ function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false, algo_name="U
     correct_rates = []
     for i=1:data_size
         push!(correct_rates,
-                calc_correct_rate2(predictions=predictions[i],
+                calc_correct_rate(predictions=predictions[i],
                                     tree=data_set[i],
                                     draw=draw,
                                     type_name="first"))
@@ -43,12 +43,12 @@ function main(;d=5, bf=2, data_size=1, rollout_num=500, draw=false, algo_name="U
 
 end
 
-@time means = main( d=5,
+@time means = main( d=7,
                     bf=2,
-                    data_size=1,
+                    data_size=100,
                     rollout_num=1000,
                     algo_name="RS",
-                    draw=true,
+                    draw=false,
                     sample_num=1)
 
 @time uctmeans = main( d=7,
